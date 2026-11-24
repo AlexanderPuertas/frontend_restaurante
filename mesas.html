@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante - Gestión y Reserva de Mesas</title>
+
+    <script>
+        // Verificación inmediata de sesión
+        try {
+            const sesion = localStorage.getItem('usuarioRestaurante') || localStorage.getItem('usuarioSena');
+            if (!sesion) {
+                window.location.replace('login.html');
+            }
+        } catch (e) {
+            window.location.replace('login.html');
+        }
+    </script>
+
+    <!-- Google Fonts (Serif de lujo y Sans moderna) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Estilos de Mesas -->
+    <link rel="stylesheet" href="./css/estilomesas.css">
+</head>
+
+<body>
+    <!-- FONDO AMBIENTAL CON OVERLAY OSCURO -->
+    <div class="bg-overlay"></div>
+
+    <div class="dashboard-wrapper">
+        <!-- BARRA SUPERIOR DE NAVEGACIÓN -->
+        <header class="top-navbar">
+            <div class="nav-brand">
+                <i class="fa-solid fa-utensils nav-logo-icon"></i>
+                <div class="nav-title-group">
+                    <span class="nav-brand-title">Restaurante</span>
+                    <span class="nav-brand-sub">Alta Cocina & Reservas</span>
+                </div>
+            </div>
+
+            <!-- PERFIL DE USUARIO Y CIERRE DE SESIÓN -->
+            <div class="nav-user-panel">
+                <div class="user-badge-role" id="rolUsuarioDisplay">Cliente</div>
+                <div class="user-info">
+                    <div class="user-avatar" id="inicialUsuario">U</div>
+                    <span class="user-name" id="nombreUsuarioDisplay">Cargando...</span>
+                </div>
+                <button class="btn-logout" onclick="cerrarSesion()" title="Cerrar sesión">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Salir</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="main-content">
+            <!-- SECCIÓN HERO DE BIENVENIDA -->
+            <section class="mesas-hero">
+                <div class="hero-kicker">EXPERIENCIA EXCLUSIVA</div>
+                <h1 class="hero-title">Disponibilidad de Mesas</h1>
+                <p class="hero-desc">
+                    Explora las mesas de nuestro salón y terraza. Selecciona la mesa que mejor se ajuste a tu ocasión y resérvala en segundos.
+                </p>
+
+                <!-- BARRA DE FILTROS Y ESTADOS -->
+                <div class="toolbar-filtros">
+                    <div class="filter-group">
+                        <span class="filter-title"><i class="fa-solid fa-filter"></i> Capacidad:</span>
+                        <div class="filter-pills">
+                            <button class="pill-btn active" onclick="filtrarCapacidad(this, 'todas')">Todas</button>
+                            <button class="pill-btn" onclick="filtrarCapacidad(this, 2)">2+ pers.</button>
+                            <button class="pill-btn" onclick="filtrarCapacidad(this, 4)">4+ pers.</button>
+                            <button class="pill-btn" onclick="filtrarCapacidad(this, 6)">6+ pers.</button>
+                        </div>
+                    </div>
+
+                    <div class="status-legend">
+                        <span class="legend-item"><span class="dot disponible"></span> Disponible</span>
+                        <span class="legend-item"><span class="dot ocupada"></span> Ocupada</span>
+                        <button class="btn-refresh" onclick="cargarMesas()" title="Actualizar mesas">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>Refrescar</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GRID CONTENEDOR DINÁMICO DE MESAS -->
+            <section class="mesas-grid-section">
+                <div class="grid-mesas" id="contenedorMesas">
+                    <!-- Se llena dinámicamente con jsmesas.js -->
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="dashboard-footer">
+            <p>Restaurante Gourmet · Sistema de Reservas en Línea</p>
+            <span>Alexander Puertas (SENA) © 2026</span>
+        </footer>
+    </div>
+
+    <!-- =========================================================
+         MODAL DE RESERVA DE MESA
+    ========================================================= -->
+    <div class="modal-overlay" id="modalReserva" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title-box">
+                    <span class="modal-kicker">RESERVACIÓN ONLINE</span>
+                    <h2 class="modal-title">Confirmar tu Reserva</h2>
+                    <p class="modal-subtitle" id="reservaMesaNumero">Mesa seleccionada</p>
+                </div>
+                <button type="button" class="btn-close-modal" onclick="cerrarModalReserva()" aria-label="Cerrar modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="formReserva" class="modal-form">
+                <!-- FECHA DE RESERVA -->
+                <div class="form-field">
+                    <label for="reservaFecha" class="modal-label">
+                        <i class="fa-regular fa-calendar-days"></i> FECHA DE LA CITA
+                    </label>
+                    <input type="date" id="reservaFecha" required>
+                </div>
+
+                <!-- HORA DE RESERVA -->
+                <div class="form-field">
+                    <label for="reservaHora" class="modal-label">
+                        <i class="fa-regular fa-clock"></i> HORA DE ATENCIÓN
+                    </label>
+                    <input type="time" id="reservaHora" required>
+                    <small class="field-hint">Selecciona la hora dentro de los horarios de atención.</small>
+                </div>
+
+                <!-- CANTIDAD DE PERSONAS -->
+                <div class="form-field">
+                    <label for="reservaPersonas" class="modal-label">
+                        <i class="fa-solid fa-users"></i> NÚMERO DE PERSONAS
+                    </label>
+                    <input type="number" id="reservaPersonas" min="1" max="10" value="2" required>
+                </div>
+
+                <!-- OBSERVACIONES / NOTAS -->
+                <div class="form-field">
+                    <label for="reservaNotas" class="modal-label">
+                        <i class="fa-regular fa-comment-dots"></i> NOTAS O PETICIÓN ESPECIAL (OPCIONAL)
+                    </label>
+                    <textarea id="reservaNotas" rows="2" placeholder="Ej: Celebración de aniversario, mesa cerca a la ventana..."></textarea>
+                </div>
+
+                <!-- BOTONES DE ACCIÓN -->
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="cerrarModalReserva()">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-confirm" id="btnConfirmarReserva">
+                        <i class="fa-solid fa-check"></i> Confirmar Reserva
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE FILTROS EN LÍNEA -->
+    <script>
+        function filtrarCapacidad(btn, cap) {
+            document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (typeof filtrarMesasPorCapacidad === 'function') {
+                filtrarMesasPorCapacidad(cap);
+            }
+        }
+    </script>
+
+    <!-- LÓGICA DE MESAS Y CONEXIÓN A LA API -->
+    <script src="./js/jsmesas.js"></script>
+</body>
+
+</html>
