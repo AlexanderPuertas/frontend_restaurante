@@ -43,6 +43,24 @@ function inicializarSesion() {
         if (inicialDisplay) inicialDisplay.textContent = nombre.charAt(0).toUpperCase();
         if (rolDisplay) rolDisplay.textContent = usuarioActual.rol || 'Cliente';
 
+        // Detección insensible a mayúsculas/minúsculas de administrador
+        const esAdmin = usuarioActual && (
+            String(usuarioActual.rol || '').toLowerCase().includes('admin') ||
+            Boolean(usuarioActual.idAdmin) ||
+            Boolean(usuarioActual.idadmin)
+        );
+
+        // Mostrar o esconder botones de administración
+        const btnCrearCliente = document.getElementById('btnAdminCrearCliente');
+        const btnToolbar = document.getElementById('btnToolbarCrearCliente');
+
+        if (btnCrearCliente) {
+            btnCrearCliente.style.display = esAdmin ? 'inline-flex' : 'none';
+        }
+        if (btnToolbar) {
+            btnToolbar.style.display = esAdmin ? 'inline-flex' : 'none';
+        }
+
         return usuarioActual;
     } catch (e) {
         console.error("Error al leer sesión:", e);

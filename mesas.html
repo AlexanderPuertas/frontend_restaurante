@@ -47,6 +47,10 @@
 
             <!-- PERFIL DE USUARIO Y CIERRE DE SESIÓN -->
             <div class="nav-user-panel">
+                <a href="crearclienteadmi.html" id="btnAdminCrearCliente" class="btn-admin-action" title="Crear nuevo cliente (RF-01)">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Crear Cliente</span>
+                </a>
                 <div class="user-badge-role" id="rolUsuarioDisplay">Cliente</div>
                 <div class="user-info">
                     <div class="user-avatar" id="inicialUsuario">U</div>
@@ -88,6 +92,10 @@
                             <i class="fa-solid fa-rotate-right"></i>
                             <span>Refrescar</span>
                         </button>
+                        <a href="crearclienteadmi.html" id="btnToolbarCrearCliente" class="btn-crear-cliente-toolbar" title="Registrar nuevo cliente en el sistema">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span>+ Nuevo Cliente</span>
+                        </a>
                     </div>
                 </div>
             </section>
@@ -182,7 +190,7 @@
     </script>
 
     <!-- LÓGICA DE MESAS Y CONEXIÓN A LA API -->
-    <script src="./js/jsmesas.js"></script>
+    <script src="./js/jsmesas.js?v=3"></script>
 </body>
 
 </html>

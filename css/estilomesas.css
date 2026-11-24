@@ -182,6 +182,49 @@ body {
     transition: all 0.2s ease;
 }
 
+.btn-admin-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(200, 122, 70, 0.18);
+    border: 1px solid rgba(200, 122, 70, 0.45);
+    color: var(--copper-light);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-admin-action:hover {
+    background: var(--copper);
+    color: #ffffff;
+    box-shadow: 0 4px 14px var(--copper-glow);
+    transform: translateY(-1px);
+}
+
+.btn-crear-cliente-toolbar {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, var(--copper), var(--copper-dark));
+    color: #ffffff;
+    text-decoration: none;
+    padding: 7px 16px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px var(--copper-glow);
+    transition: all 0.2s ease;
+}
+
+.btn-crear-cliente-toolbar:hover {
+    background: linear-gradient(135deg, var(--copper-light), var(--copper));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(200, 122, 70, 0.4);
+}
+
 .btn-logout:hover {
     background: rgba(239, 68, 68, 0.15);
     border-color: rgba(239, 68, 68, 0.3);

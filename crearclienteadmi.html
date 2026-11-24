@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración - Crear Nuevo Cliente (RF-01)</title>
+
+    <script>
+        // Verificación de sesión administrativa
+        try {
+            const sesionStr = localStorage.getItem('usuarioRestaurante') || localStorage.getItem('usuarioSena');
+            if (!sesionStr) {
+                window.location.replace('login.html');
+            }
+        } catch (e) {
+            window.location.replace('login.html');
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Estilos específicos de Crear Cliente Admi -->
+    <link rel="stylesheet" href="./css/stilocrearclienteadmi.css">
+</head>
+
+<body>
+    <!-- FONDO CON OVERLAY OSCURO AMBIENTAL -->
+    <div class="bg-overlay"></div>
+
+    <div class="page-wrapper">
+        <!-- BARRA SUPERIOR -->
+        <header class="top-nav">
+            <a href="mesas.html" class="btn-volver" title="Volver al panel principal">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Volver al Panel</span>
+            </a>
+            <div class="badge-modulo">
+                <i class="fa-solid fa-shield-halved"></i> Módulo Administrador · RF-01
+            </div>
+            <div class="admin-profile" id="adminInfoDisplay">
+                <div class="admin-avatar" id="adminAvatar">A</div>
+                <span class="admin-name" id="adminNombreDisplay">Administrador</span>
+            </div>
+        </header>
+
+        <!-- CONTENEDOR PRINCIPAL -->
+        <main class="main-container">
+            <div class="card-formulario">
+                <!-- CABECERA DE LA TARJETA -->
+                <div class="card-header">
+                    <span class="kicker-sub">ALTA DE USUARIOS</span>
+                    <h1 class="card-title">Registrar Nuevo Cliente</h1>
+                    <p class="card-desc">
+                        Completa los datos para dar de alta una nueva cuenta de cliente en el sistema del restaurante.
+                    </p>
+                </div>
+
+                <!-- ALERTA DE MENSAJES (Error / Éxito) -->
+                <div id="mensajeAlerta" class="alerta-box" style="display: none;">
+                    <i class="fa-solid fa-circle-exclamation alerta-icono" id="alertaIcono"></i>
+                    <div class="alerta-texto">
+                        <strong id="alertaTitulo"></strong>
+                        <span id="alertaMensaje"></span>
+                    </div>
+                </div>
+
+                <!-- FORMULARIO -->
+                <form id="formCrearCliente" novalidate>
+                    <!-- CAMPO: NOMBRE COMPLETO -->
+                    <div class="form-group">
+                        <label for="nombre" class="form-label">
+                            <i class="fa-solid fa-user"></i> NOMBRE COMPLETO
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="text" id="nombre" name="nombre" placeholder="Ej: Carlos Alberto Gómez" required autofocus>
+                        </div>
+                        <span class="field-hint">Solo letras y espacios (3 a 100 caracteres).</span>
+                    </div>
+
+                    <!-- CAMPO: CORREO ELECTRÓNICO -->
+                    <div class="form-group">
+                        <label for="correo" class="form-label">
+                            <i class="fa-solid fa-envelope"></i> CORREO ELECTRÓNICO
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com" required>
+                        </div>
+                        <span class="field-hint">Se usará como usuario para iniciar sesión.</span>
+                    </div>
+
+                    <!-- CAMPO: TELÉFONO -->
+                    <div class="form-group">
+                        <label for="telefono" class="form-label">
+                            <i class="fa-solid fa-phone"></i> TELÉFONO CELULAR
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="tel" id="telefono" name="telefono" placeholder="Ej: 3001234567" maxlength="10" required>
+                        </div>
+                        <span class="field-hint">Debe contener exactamente 10 dígitos numéricos.</span>
+                    </div>
+
+                    <!-- CAMPO: CONTRASEÑA -->
+                    <div class="form-group">
+                        <label for="contrasena" class="form-label">
+                            <i class="fa-solid fa-lock"></i> CONTRASEÑA DE ACCESO
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="password" id="contrasena" name="contrasena" placeholder="••••••••••••" required>
+                            <button type="button" id="btnTogglePassword" class="btn-eye" title="Mostrar/ocultar contraseña" tabindex="-1">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- REGLAS DE CONTRASEÑA EN TIEMPO REAL -->
+                        <div class="password-checklist">
+                            <span class="check-item" id="reqLongitud">
+                                <i class="fa-regular fa-circle-dot"></i> Mínimo 8 caracteres
+                            </span>
+                            <span class="check-item" id="reqMayus">
+                                <i class="fa-regular fa-circle-dot"></i> Una mayúscula
+                            </span>
+                            <span class="check-item" id="reqMinus">
+                                <i class="fa-regular fa-circle-dot"></i> Una minúscula
+                            </span>
+                            <span class="check-item" id="reqNumero">
+                                <i class="fa-regular fa-circle-dot"></i> Un número
+                            </span>
+                            <span class="check-item" id="reqSimbolo">
+                                <i class="fa-regular fa-circle-dot"></i> Un símbolo especial (!@#$%...)
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- BOTÓN DE ENVÍO -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit" id="btnSubmit">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span>Crear Cuenta de Cliente</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- FOOTER -->
+                <div class="card-footer">
+                    <span>RF-01 · Creación Segura de Clientes con Cifrado Bcrypt</span>
+                    <p>Alexander Puertas (SENA) © 2026</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT CONEXIÓN CON APIRESTAURANTE -->
+    <script src="./js/jscrearclienteadmi.js"></script>
+</body>
+
+</html>
